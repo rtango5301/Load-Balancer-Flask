@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Load Balancer</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Interactive Load Balancer</h1>
+    <input type="text" id="operation" placeholder="Enter arithmetic operation">
+    <button onclick="sendOperation()">Send</button>
+    <div id="result"></div>
+
+    <script>
+        const socket = io();
+
+        function sendOperation() {
+            const operation = document.getElementById('operation').value;
+            socket.emit('send_operation', operation);
+        }
+
+        socket.on('result', function(data) {
+            const resultDiv = document.getElementById('result');
+            if (data.error) {
+                resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+            } else {
+                resultDiv.innerHTML = `<p>Result: ${data.result} (Handled by ${data.server})</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
